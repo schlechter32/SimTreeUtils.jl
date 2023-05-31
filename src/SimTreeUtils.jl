@@ -1,5 +1,10 @@
 module SimTreeUtils
 
-# Write your package code here.
+using Parameters
+using Printf
+
+export copyresults, findrelpaths, getparameters, simsnum, getsims, getsimspath
+
+include("metaanalysis.jl")
 
 end

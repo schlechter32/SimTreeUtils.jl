@@ -3,6 +3,10 @@ uuid = "f7247de8-1159-4f68-b7ff-a6d1f4924cee"
 authors = ["fchrstou <filippos.christou@ikr.uni-stuttgart.de> and contributors"]
 version = "0.1.0"
 
+[deps]
+Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+
 [compat]
 julia = "1.7"
 
