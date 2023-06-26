@@ -56,7 +56,7 @@ function getparameters(relpaths::Vector{String})
 	return Dict(k => sort(collect(v)) for (k,v) in pard)
 end
 
-parseseeds(relpths::Vector{String}) = [parse(Int, match(r"[0-9]+$", relpth).match) for relpth in relpths] |> unique! |> sort!
+parseseeds(relpths::Vector{String}) = [parse(Int, match(r"Seed([0-9]+)", relpth).captures[1]) for relpth in relpths] |> unique! |> sort!
 
 """
 Return index of simulation containing the parameters
