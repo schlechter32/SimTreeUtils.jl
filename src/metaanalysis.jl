@@ -83,7 +83,7 @@ function simsnum(relsimpths::Vector{String}, seed::Int, parsx...)
 	#pars = string.(parsx)
 	pars = [ps for p in parsx for ps in [string(p)]]
 	simsn = simsnum(relsimpths, pars...)
-	reg = Regex("/Seed0?$(seed)\$")
+	reg = Regex("/Seed0?$(seed)")
 	seededn = [i for i in simsn if occursin(reg, relsimpths[i])]
     return seededn
 end
