@@ -36,7 +36,7 @@ Return all parameters used in a SimTree simulation as a dictionary
 function getparameters(relpaths::Vector{String})
 	pard = Dict{String, Union{Set{String}, Set{Int}, Set{Float64}}}()
 	for path in relpaths
-		for m in eachmatch(r"Para[S,F,I]__([a-z,A-Z,0-9]+)__([a-z,A-Z,0-9,.]+)", path)
+		for m in eachmatch(r"Para[S,F,I]__([a-z,A-Z,0-9,_]+)__([a-z,A-Z,0-9,.]+)", path)
 			parsedInt = tryparse(Int, m[2])
 			if parsedInt !== nothing
 				haskey(pard, m[1]) || (pard[m[1]] = Set{Int}())
@@ -91,7 +91,7 @@ end
 """Return model of simulation indexes"""
 function model(modelds::Vector, v::Vector{Int})
 	mods = [modelds[i] for i in v]
-		if length(mods) == 1
+	if length(mods) == 1
 		return mods[1]
 	elseif length(mods) == 0
 		return missing
