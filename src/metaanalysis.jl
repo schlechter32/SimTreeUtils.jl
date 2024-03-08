@@ -34,7 +34,7 @@ end
 Return all parameters used in a SimTree simulation as a dictionary
 """
 function getparameters(relpaths::Vector{String})
-	pard = Dict{String, Union{Set{String}, Set{Int}, Set{Float64}}}()
+	pard = Dict{String, Any}()
 	for path in relpaths
 		for m in eachmatch(r"Para[S,F,I]__([a-z,A-Z,0-9,_]+)__([a-z,A-Z,0-9,._]+)", path)
 			parsedInt = tryparse(Int, m[2])
@@ -55,6 +55,44 @@ function getparameters(relpaths::Vector{String})
 	end
 	return Dict(k => sort(collect(v)) for (k,v) in pard)
 end
+
+"""
+$(TYPEDSIGNATURES)
+
+Get the simtree parameters of the simulation in a Dict{String, Any}
+Give absolute path of the simulation directory as a string.
+
+# Example
+```julia
+julia> getsimusimtreeparams("ParaS__Topology__BA10_3/ParaS__PoissonProcess__A1_S3/ParaS__DemandValues__DV4_6_8/ParaI__PAR_K_CANDPATHS__1/ParaI__PAR_SPECTRUMSLOTLENGTH__20/ParaS__PAR_POMDP__DummyPOMDP/ParaF__PAR_DISCOUNT__0.8/ParaS__ExploreDecay__LDS_1_001_5000/ParaI__PAR_MAX_STEPS__3000/ParaF__PAR_LEARNING_RATE__0.005/ParaS__NNHiddenLayers__HL_128_128_128_128_128/Seed01")
+```
+"""
+function getparameters(path::String; allstring=false)
+	m = match(r"Results/(.*)", path)
+	if !isnothing(m)
+		relpath = string(first(m.captures))
+	else
+		return nothing
+	end
+	pard = Dict{String, Any}()
+	for m in eachmatch(r"Para[S,F,I]__([a-z,A-Z,0-9,_]+)__([a-z,A-Z,0-9,._]+)", relpath)
+		if !allstring
+			parsedInt = tryparse(Int, m[2])
+			if parsedInt !== nothing
+				pard[m[1]] = parsedInt
+				continue
+			end
+			parsedFloat = tryparse(Float64, m[2])
+			if parsedFloat !== nothing
+				pard[m[1]] = parsedFloat
+				continue
+			end
+		end
+		pard[m[1]] = string(m[2])
+	end
+	return pard
+end
+
 
 parseseeds(relpths::Vector{String}) = [parse(Int, match(r"Seed([0-9]+)", relpth).captures[1]) for relpth in relpths] |> unique! |> sort!
 
