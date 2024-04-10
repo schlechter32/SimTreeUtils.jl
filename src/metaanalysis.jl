@@ -105,7 +105,11 @@ function simsnum(relsimpths::Vector{String}, pars::String...)
 	for (i,relpth) in enumerate(relsimpths)
 		ispicked = true
 		for par in pars
-			reg = Regex("__$(par)0*/")
+			if occursin(r"[0-9]+\.[0-9]*$", par)
+				reg = Regex("__$(par)0*/")
+			else
+				reg = Regex("__$(par)/")
+			end
 			ispicked = ispicked && occursin(reg, relpth)
 			ispicked || break
 		end
