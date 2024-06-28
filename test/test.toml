@@ -1,0 +1,17 @@
+[SimTreeParams]
+t1="RSA"
+t2=[1.0,2.0]
+t3=[1,2,3]
+t4=["RSA1", "RSA2"]
+[SimulateAllRunParams]
+# Gloval process slots
+gps=
+# Local process slots
+lps=1
+# Systemmemory per simulation
+mem=300
+batches=1
+coers=1
+[PartialSimA]
+t2=1.0
+t4=[1,2,5]

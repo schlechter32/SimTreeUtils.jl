@@ -1,0 +1,5 @@
+# Add this to your .bashrc, .bash_profile, or .zshrc
+function st(){
+    source "$ST_PATH/st_wrapper.bash"
+
+}

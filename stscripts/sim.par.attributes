@@ -1,0 +1,17 @@
+[PoissonProcess, AvaMax]
+PAR_ARRIVALRATE=1.0
+PAR_SERVICERATE="AvaMax"
+
+[PoissonProcess, Fixed]
+PAR_ARRIVALRATE=1.0
+PAR_SERVICERATE=300000.0
+
+[PoissonProcess, AvaMaxStd]
+PAR_ARRIVALRATE=1.0
+PAR_SERVICERATE="AvaMaxStd"
+
+[PoissonProcess, AvaMaxStdPlus]
+PAR_ARRIVALRATE=1.0
+PAR_SERVICERATE="AvaMaxStdPlus"
+
+
