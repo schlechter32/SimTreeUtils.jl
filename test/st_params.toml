@@ -4,14 +4,16 @@ t2=[1.0,2.0]
 t3=[1,2,3]
 t4=["RSA1", "RSA2"]
 [SimulateAllRunParams]
+executable="$HOME/.juliaup/bin/julia --project=$TOOL_PATH --threads 1 $TOOL_PATH/simu/rlsim.jl"
 # Gloval process slots
-gps=
+gps=1
 # Local process slots
 lps=1
 # Systemmemory per simulation
 mem=300
 batches=1
 coers=1
-[PartialSimA]
+[PartialSim]
+[PartialSim.SimA]
 t2=1.0
 t4=[1,2,5]

@@ -1,15 +1,16 @@
 #!/bin/bash
-arg1=$1
-echo $arg1
+arg1=${1:-default}
+umask 007
 
-if [ $arg1 = "cd" ];then
-    cd $studyroot
-fi
 if [ "${studyroot+set}" = "set" ]; then
     echo "Current StudyRoot is: $studyroot"
-    "$ST_PATH/st.py"
+    retval=$("$ST_PATH/st.py" "$@" | tee /dev/tty | tail -n 1)    # | tail -n 1)
+    if [ -d "$retval" ]; then
+        cd $retval
+    fi
 else
 
-    "$ST_PATH/st.py"
+    echo "Current StudyRoot is not set please set now"
+    "$ST_PATH/st.py" "init"
     source .srenv
 fi

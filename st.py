@@ -1,92 +1,16 @@
 #!/usr/bin/env python3
 
-import toml
-import os
-import glob
-import readline
-join = os.path.join
-def load_toml():
-    to=toml.load("test/test.toml")
-    print(to)
-
-def is_study_root(folder):
-    return os.path.isdir(join(folder, 'MetaData')) and \
-            os.path.isdir(join(folder, 'Results')) and \
-            os.path.isdir(join(folder, 'Temp'))
-
-def has_study_root_env():
-    return os.getenv("studyroot") is not None
-
-def only_in_study_root(func):
-    def wrapper(*args, **kwargs):
-        cur_dir =os.getcwd()
-        if not has_study_root_env() and not is_study_root('.'):
-
-            raise Exception('Studyroot not set and not in studyroot')
-        if not is_study_root('.'):
-            os.chdir(os.getenv("studyroot"))
-            
-        func(*args, **kwargs)
-        os.chdir(cur_dir)
-    return wrapper
-def write_env(sr_dir):
-    os.chdir(sr_dir)
-    with open("", "w") as file:
-            file.write(f"export studyroot={sr_dir}\n")
-
-def to_st_type_string(val):
-    type_map={
-        "str": "string",
-        "float":"float",
-            "int":"int"
-    }
-    return type_map[type(val).__name__]
-
-class Studyroot:
-    study_root_dir=""
-    def set_study_root(self):
-        shell_root=os.getenv("studyroot")
-        print(f"shellroot {shell_root}")
-        pwd=os.getcwd()
-
-        if shell_root is not None:
-            self.study_root_dir=shell_root
-        elif is_study_root(pwd):
-            self.study_root_dir=pwd
-        else:
-            # TODO: Path completion
-            self.study_root_dir=input("Set fullpath to studyroot: ")
-        # os.system(f"export studyroot={self.study_root_dir}")
-        write_env(self.study_root_dir)
-        print(self.study_root_dir)
-    @only_in_study_root
-    def create_params_and_template(self):
-
-        if os.path.exists("st_params.toml"):
-            toml_content=toml.load("st_params.toml")
-        else:
-            print("ERROR: No st_params.tomls found in Studyroot")
-
-            return
-            
-        print(toml_content)
-        simtree_params=toml_content["SimTreeParams"]
-        sp_string="SimTree add "
-        for par,vals in simtree_params.items():
-            sp_string+="--sp " + par
-            if isinstance(vals,list):
-                sp_string += f" {to_st_type_string(vals[1])}"
-                for val in vals:
-                    sp_string += f" {val}"
-            else:
-                sp_string+=f" {to_st_type_string(vals)} {vals}"
-            sp_string+=" "
-        os.system(sp_string)
+# import toml
+# import os
+# import glob
+# import readline
+import sys
+import argparse
+from stlib.st_do import *
+from stlib.st_root_class import Studyroot
 
 
-    @only_in_study_root
-    def test_sr_func(self):
-        print(os.getcwd())
+
 
 
 
@@ -94,8 +18,59 @@ class Studyroot:
 
 
 if __name__=="__main__":
-    str=Studyroot()
-    str.set_study_root()
+    st_root=Studyroot()
+    # print("Arguments passed to st.py (before parsing):", sys.argv[1:])
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(help='sub-command help')
+
+    
+    # Print all arguments
+    # subparsers = parser.add_subparsers(dest='command')
+    cd_parser = subparsers.add_parser('cd', help='Go to roota: .; Results dir i for interactive pars from list for direct')
+    cd_parser.add_argument("path", nargs="+", help="To Resultspath")
+    cd_parser.set_defaults(func=do_cd)
+    p = subparsers.add_parser('test', help='Test param')
+    p.set_defaults(func=test_sr_func)
+    p.set_defaults(func=st_root.set_study_root)
+    p = subparsers.add_parser('init', help='Set studyroot for current shell session')
+    p.set_defaults(func=st_root.set_study_root)
+    p = subparsers.add_parser('count', help='counts the parameter value sets')
+    p.set_defaults(func=do_count)
+    p = subparsers.add_parser('list', help='lists the parameter value sets')
+    p.set_defaults(func=do_list, accept_unknown_args=True)
+
+    p = subparsers.add_parser('compress', help='compresses the Results folder of a study root')
+    p.set_defaults(func=do_compress)
+    p = subparsers.add_parser('uncompress', help='uncompresses the Results folder of a study root')
+    p.set_defaults(func=do_uncompress)
+
+    p = subparsers.add_parser('unlockall', help='unlocks all parameter sets')
+    p.set_defaults(func=do_unlockall)
+    p = subparsers.add_parser('cleanall', help='cleans all parameter sets and all foreign files')
+    p.set_defaults(func=do_cleanall)
+
+    p = subparsers.add_parser('run', help='cleans all parameter sets and all foreign files')
+    p.set_defaults(func=lambda args: do_run(args,st_root))
+
+    p = subparsers.add_parser('create', help='cleans all parameter sets and all foreign files')
+    p.set_defaults(func=lambda args: do_create(args,st_root))
+    p = subparsers.add_parser('remove', help='removes the study root')
+    p.set_defaults(func=do_remove)
+    # do_count(args=0)
+    # str.set_study_root()
     # str.create_params_and_template()
     # str.test_sr_func()
 
+    args, unknown_args = parser.parse_known_args()
+    accept_unknown_args = True
+    if not 'accept_unknown_args' in args or not args.accept_unknown_args:
+        accept_unknown_args = False
+        args = parser.parse_args()
+    if 'func' in args:
+        try:
+            if accept_unknown_args:
+                args.func(args, unknown_args)
+            else:
+                args.func(args)
+        except Exception as e:
+            exit('ERROR: {}'.format(e))

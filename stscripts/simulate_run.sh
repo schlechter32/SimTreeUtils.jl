@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!bin/env bash
 ./scripts/prepareforsimu.sh
 
 # global
