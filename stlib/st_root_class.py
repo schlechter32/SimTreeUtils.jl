@@ -1,8 +1,23 @@
 from .st_utils import *
 class Studyroot:
     study_root_dir=""
+    toml_content={}
+    stparams={}
+    runparams={}
+    partparams={}
+    gps=0
+    lps=1
+    mem="10G"
+    batches=1
+    cores=1
     def __init__(self):
        self.set_study_root=self.set_study_root(0) 
+    def safe_set(self,key,dict):
+        if key in dict:
+            if hasattr(self,key):
+                setattr(self,key,dict[key])
+
+
     def set_study_root(self,args):
         # print("Setting sr root")
         shell_root=os.getenv("studyroot")
@@ -19,16 +34,27 @@ class Studyroot:
         # os.system(f"export studyroot={self.study_root_dir}")
         write_env(self.study_root_dir)
         print(f"set sroot as {self.study_root_dir}")
+
     @only_in_study_root
-    def create_params_and_template(self):
+    def load_toml(self):
 
         if os.path.exists("st_params.toml"):
             toml_content=toml.load("st_params.toml")
             print(toml_content)
+            self.toml_content=toml_content
+            self.stparams=toml_content["SimTreeParams"]
+            self.runparams=toml_content["SimulateAllRunParams"]
+            if "PartialSim" in toml_content:
+                self.partparams=toml_content["PartialSim"]
+
         else:
             print("ERROR: No st_params.tomls found in Studyroot")
 
             return
+
+    @only_in_study_root
+    def create_params_and_template(self):
+
             
         print(toml_content)
         simtree_params=toml_content["SimTreeParams"]

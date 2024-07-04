@@ -12,7 +12,7 @@ lps=1
 # Systemmemory per simulation
 mem=300
 batches=1
-coers=1
+cores=1
 [PartialSim]
 [PartialSim.SimA]
 t2=1.0
