@@ -39,17 +39,23 @@ Wraps the function you want to run through SimTree simulate
 function stsimulate(simulatefunction)
 
 
-if haskey(ENV,"SIMTREE_RESULTS_PATH")
-    SIMTREE_RESULTS_PATH = ENV["SIMTREE_RESULTS_PATH"]
-else
-    @warn "Now resultspath set using cwd/results"
-    SIMTREE_RESULTS_PATH="./results"
-end
-    str_seed=ENV["ST_SEED"]
-    println("Seed is:$(str_seed):")
-    SEED=parse(Int,ENV["ST_SEED"])
+    if haskey(ENV, "SIMTREE_RESULTS_PATH")
+        SIMTREE_RESULTS_PATH = ENV["SIMTREE_RESULTS_PATH"]
+    else
+        @warn "Now resultspath set using cwd/results"
+        SIMTREE_RESULTS_PATH = "./results"
+    end
+    if haskey(ENV, "ST_SEED")
+        str_seed = ENV["ST_SEED"]
+        println("Seed is:$(str_seed):")
+
+        SEED = parse(Int, ENV["ST_SEED"])
+    else
+        @warn "Seed not set from ST using 0"
+        SEED = 0
+    end
     include("$SIMTREE_RESULTS_PATH/sim.par")
-    results = simulatefunction(PARAMSDICT,SEED,ENV["DATA_PATH"])
+    results = simulatefunction(PARAMSDICT, SEED, ENV["DATA_PATH"])
     @show results
     JLD2.save("$SIMTREE_RESULTS_PATH/study.jld2", results)
 
