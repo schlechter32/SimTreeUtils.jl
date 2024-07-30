@@ -44,6 +44,7 @@ if haskey(ENV,"SIMTREE_RESULTS_PATH")
 else
     @warn "Now resultspath set using cwd/results"
     SIMTREE_RESULTS_PATH="./results"
+end
     str_seed=ENV["ST_SEED"]
     println("Seed is:$(str_seed):")
     SEED=parse(Int,ENV["ST_SEED"])
