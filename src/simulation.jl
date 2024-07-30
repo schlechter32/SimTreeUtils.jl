@@ -61,7 +61,7 @@ function stsimulate(simulatefunction)
         @warn "Datapath not set using pwd/data"
         datapath = "$(pwd())/data"
     end
-    results = simulatefunction(PARAMSDICT, SEED,)
+    results = simulatefunction(PARAMSDICT, SEED,datapath)
     @show results
     JLD2.save("$SIMTREE_RESULTS_PATH/study.jld2", results)
 
