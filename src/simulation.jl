@@ -43,7 +43,7 @@ function stsimulate(simulatefunction)
         SIMTREE_RESULTS_PATH = ENV["SIMTREE_RESULTS_PATH"]
     else
         @warn "Now resultspath set using cwd/results"
-        SIMTREE_RESULTS_PATH = "$(pwd)/results"
+        SIMTREE_RESULTS_PATH = "$(pwd())/results"
     end
     if haskey(ENV, "ST_SEED")
         str_seed = ENV["ST_SEED"]
