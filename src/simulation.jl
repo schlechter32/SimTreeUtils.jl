@@ -55,7 +55,13 @@ function stsimulate(simulatefunction)
         SEED = 0
     end
     include("$SIMTREE_RESULTS_PATH/sim.par")
-    results = simulatefunction(PARAMSDICT, SEED, ENV["DATA_PATH"])
+    if haskey(ENV, "DATA_PATH")
+        datapath = ENV["DATA_PATH"]
+    else
+        @warn "Datapath not set using pwd/data"
+        datapath = "$(pwd())/data"
+    end
+    results = simulatefunction(PARAMSDICT, SEED,)
     @show results
     JLD2.save("$SIMTREE_RESULTS_PATH/study.jld2", results)
 
