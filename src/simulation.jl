@@ -39,7 +39,11 @@ Wraps the function you want to run through SimTree simulate
 function stsimulate(simulatefunction)
 
 
+if haskey(ENV,"SIMTREE_RESULTS_PATH")
     SIMTREE_RESULTS_PATH = ENV["SIMTREE_RESULTS_PATH"]
+else
+    @warn "Now resultspath set using cwd"
+    SIMTREE_RESULTS_PATH="."
     str_seed=ENV["ST_SEED"]
     println("Seed is:$(str_seed):")
     SEED=parse(Int,ENV["ST_SEED"])
