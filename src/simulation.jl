@@ -36,7 +36,7 @@ $(TYPEDSIGNATURES)
 
 Wraps the function you want to run through SimTree simulate
 """
-function stsimulate(simulatefunction,save=false)
+function stsimulate(simulatefunction,save=true)
 
 
     if haskey(ENV, "SIMTREE_RESULTS_PATH")
