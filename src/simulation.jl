@@ -42,20 +42,21 @@ function stsimulate(simulatefunction,save=false)
     if haskey(ENV, "SIMTREE_RESULTS_PATH")
         SIMTREE_RESULTS_PATH = ENV["SIMTREE_RESULTS_PATH"]
     else
-        @warn "Now resultspath set using cwd/results"
+        @warn "Now resultspath set using $(pwd())/results"
         SIMTREE_RESULTS_PATH = "$(pwd())/results"
     end
     starguments=TOML.parsefile("$SIMTREE_RESULTS_PATH/simtree_arguments.toml")
+    print(starguments)
     if haskey(starguments, "s")
         str_seed = starguments["s"]
         println("Seed is:$(str_seed):")
 
-        SEED = parse(Int, ENV["ST_SEED"])
+        SEED = parse(Int, str_seed)
     else
         @warn "Seed not set from ST using 0"
         SEED = 0
     end
-    include("$SIMTREE_RESULTS_PATH/$(starguments['p'])")
+    include("$SIMTREE_RESULTS_PATH/$(starguments["p"])")
     if haskey(starguments, "DATA_PATH")
         datapath = starguments["DATA_PATH"]
     else
