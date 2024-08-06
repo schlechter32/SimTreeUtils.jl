@@ -36,7 +36,7 @@ $(TYPEDSIGNATURES)
 
 Wraps the function you want to run through SimTree simulate
 """
-function stsimulate(simulatefunction,save=true)
+function stsimulate(simulatefunction;savefile=true)
 
 
     if haskey(ENV, "SIMTREE_RESULTS_PATH")
@@ -65,8 +65,8 @@ function stsimulate(simulatefunction,save=true)
     end
     results = simulatefunction(PARAMSDICT, SEED,datapath)
     @show results
-    if save
-    BSON.save("$SIMTREE_RESULTS_PATH/study.bson", results)
+    if savefile
+    BSON.bson("$SIMTREE_RESULTS_PATH/study.bson", results)
     end
     return results
 
