@@ -36,7 +36,7 @@ $(TYPEDSIGNATURES)
 
 Wraps the function you want to run through SimTree simulate
 """
-function stsimulate(simulatefunction)
+function stsimulate(simulatefunction,save=false)
 
 
     if haskey(ENV, "SIMTREE_RESULTS_PATH")
@@ -45,8 +45,9 @@ function stsimulate(simulatefunction)
         @warn "Now resultspath set using cwd/results"
         SIMTREE_RESULTS_PATH = "$(pwd())/results"
     end
-    if haskey(ENV, "ST_SEED")
-        str_seed = ENV["ST_SEED"]
+    starguments=TOML.parsefile("$SIMTREE_RESULTS_PATH/simtree_arguments.toml")
+    if haskey(starguments, "s")
+        str_seed = starguments["s"]
         println("Seed is:$(str_seed):")
 
         SEED = parse(Int, ENV["ST_SEED"])
@@ -54,16 +55,19 @@ function stsimulate(simulatefunction)
         @warn "Seed not set from ST using 0"
         SEED = 0
     end
-    include("$SIMTREE_RESULTS_PATH/sim.par")
-    if haskey(ENV, "DATA_PATH")
-        datapath = ENV["DATA_PATH"]
+    include("$SIMTREE_RESULTS_PATH/$(starguments['p'])")
+    if haskey(starguments, "DATA_PATH")
+        datapath = starguments["DATA_PATH"]
     else
         @warn "Datapath not set using pwd/data"
         datapath = "$(pwd())/data"
     end
     results = simulatefunction(PARAMSDICT, SEED,datapath)
     @show results
-    JLD2.save("$SIMTREE_RESULTS_PATH/study.jld2", results)
+    if save
+    BSON.save("$SIMTREE_RESULTS_PATH/study.bson", results)
+    end
+    return results
 
 
 end
