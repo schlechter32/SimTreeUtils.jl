@@ -13,7 +13,7 @@ function getsimtreeparams(simtreedirectory::String=".")::Dict{String,Vector{Stri
     end
     seekstart(iobf)
 
-    parvaldict = Dict{String,Vector{String}}()
+    parvaldict = Dict{String, Vector{String}}()
 
     par_val_rgx = r"\[([^\] ]*) ([^\]]*)\]"
 
