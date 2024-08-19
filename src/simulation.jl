@@ -56,6 +56,7 @@ function stsimulate(simulatefunction;savefile=true)
         @warn "Seed not set from ST using 0"
         SEED = 0
     end
+    # INFO: This file has the definition from PARAMSDICT
     include("$SIMTREE_RESULTS_PATH/$(starguments["p"])")
     if haskey(starguments, "DATA_PATH")
         datapath = starguments["DATA_PATH"]
