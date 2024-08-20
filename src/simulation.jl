@@ -64,6 +64,7 @@ function stsimulate(simulatefunction;savefile=true)
         @warn "Datapath not set using pwd/data"
         datapath = "$(pwd())/data"
     end
+    PARAMSDICT["stresultspath"]=SIMTREE_RESULTS_PATH
     results = simulatefunction(PARAMSDICT, SEED,datapath)
     @show results
     if savefile
