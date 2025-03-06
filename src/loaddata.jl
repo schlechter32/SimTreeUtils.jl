@@ -92,8 +92,25 @@ function getparameters(path::String; allstring=false)
 	end
 	return pard
 end
+"""
+$(TYPEDSIGNATURES)
+Get a dictionary of simtree parameters according to a search file
+"""
+function getparametersdict(resultsdir::String, signaturefilename::String="study.bson")
+    relpaths = findrelpaths(signaturefilename, resultsdir)
+    return getparameters(relpaths)
+end
 
-
+"""
+$(TYPEDSIGNATURES)
+Get a named tuple of simtree parameters according to a search file
+"""
+function getparametersnamedtuple(parametersdict::Dict, resultsdir::String, signaturefilename::String="study.bson")
+    relpaths = findrelpaths(signaturefilename, resultsdir)
+    seeds = parseseeds(relpaths)
+    tmp = (; (Symbol(k) => [v...] for (k, v) in parametersdict)...)
+    return (; :seeds => seeds, tmp...)
+end
 parseseeds(relpths::Vector{String}) = [parse(Int, match(r"Seed([0-9]+)", relpth).captures[1]) for relpth in relpths] |> unique! |> sort!
 
 """
